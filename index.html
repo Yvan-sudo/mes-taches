@@ -789,6 +789,10 @@
     const SUPABASE_URL = 'https://jgeanhanezpmrfwqmsbi.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CMnt_tGmmq_JkJxRR-qkTw_jYPD5HjB';
     const cloud = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    
+    const isLocalServer = window.location.hostname !== 'yvan-sudo.github.io' && window.location.hostname !== 'github.com';
+    const backendMode = isLocalServer ? 'local' : 'cloud';
+    
     let currentUser = null;
 
     function userStorageKey(cat, userId = currentUser?.id) {
@@ -835,6 +839,23 @@
     }
 
     async function requestState(options = {}) {
+      if (backendMode === 'local') {
+        // Mode serveur local - pas d'authentification requise
+        if (options.method === 'PUT') {
+          const response = await fetch('/api/state', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ state: JSON.parse(options.body).state }),
+          });
+          if (!response.ok) throw new Error(`Erreur ${response.status}`);
+          return await response.json();
+        }
+        const response = await fetch('/api/state');
+        if (!response.ok) throw new Error(`Erreur ${response.status}`);
+        return await response.json();
+      }
+      
+      // Mode Supabase cloud
       if (!currentUser) throw new Error('Connexion requise.');
       if (options.method === 'PUT') {
         const nextRevision = serverRevision + 1;
@@ -924,7 +945,9 @@
           applyServerState(payload);
           setSyncStatus('Synchronisé', 'online');
         }
-        localStorage.setItem('tasks_cloud_migrated_user', currentUser.id);
+        if (currentUser?.id) {
+          localStorage.setItem('tasks_cloud_migrated_user', currentUser.id);
+        }
       } catch (error) {
         console.error(error);
         setSyncStatus('Hors ligne — données locales', 'offline');
@@ -1002,6 +1025,17 @@
 
     async function initializeApp() {
       CATEGORIES.forEach(render);
+      
+      if (backendMode === 'local') {
+        document.getElementById('auth-overlay').hidden = true;
+        document.getElementById('logout-button').hidden = true;
+        document.getElementById('sync-status').textContent = 'Mode local (Wi-Fi)';
+        serverRevision = 0;
+        hasUnsyncedChanges = false;
+        await initializeSync();
+        return;
+      }
+      
       const { data, error } = await cloud.auth.getSession();
       if (error) {
         console.error(error);
