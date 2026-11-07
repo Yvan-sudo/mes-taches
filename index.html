@@ -515,6 +515,15 @@
     .input-row input,
     .input-row select { font-size: 0.8rem; padding: 7px 9px !important; }
     .input-row button { width: 34px; height: 34px; }
+    .input-row .task-date {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+    .task-date input { flex: 0 1 160px; color-scheme: dark; }
     ul { gap: 5px; }
     li { padding: 6px 8px; font-size: 0.82rem; gap: 7px; }
     .desc { font-size: 0.74rem; margin-left: 0; }
@@ -594,6 +603,7 @@
     }
     .calendar-legend .legend-lycee::before { background: var(--blue-light); }
     .calendar-legend .legend-perso::before { background: var(--green-light); }
+    .calendar-legend .legend-actuelle::before { background: #fbbf24; }
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -617,9 +627,15 @@
     }
     .calendar-day.outside { opacity: 0.24; }
     .calendar-day.today { border-color: rgba(245,158,11,0.7); }
+    .calendar-day.drag-over { border-color: var(--blue-light); background: rgba(99,102,241,0.2); opacity: 1; }
     .day-number { display: block; margin-bottom: 4px; color: var(--muted); font-size: 0.7rem; }
     .calendar-event {
       display: block;
+      width: 100%;
+      border: 0;
+      text-align: left;
+      font-family: inherit;
+      cursor: grab;
       margin-top: 3px;
       padding: 3px 5px;
       border-left: 3px solid;
@@ -633,6 +649,13 @@
     }
     .calendar-event.lycee { border-color: var(--blue-light); background: rgba(99,102,241,0.14); }
     .calendar-event.perso { border-color: var(--green-light); background: rgba(16,185,129,0.14); }
+    .calendar-event.actuelle { border-color: #fbbf24; background: rgba(245,158,11,0.14); }
+    .calendar-event.dragging { opacity: 0.35; }
+    .calendar-event:focus-visible { outline: 2px solid var(--blue-light); }
+    .calendar-help { color: var(--muted); font-size: 0.75rem; margin-bottom: 10px; }
+    .calendar-date-dialog { margin: auto; color: var(--text); }
+    .calendar-date-dialog::backdrop { background: rgba(0,0,0,0.7); }
+    .calendar-date-dialog input { color-scheme: dark; }
     .calendar-empty { color: var(--muted); text-align: center; padding: 20px; font-size: 0.85rem; }
 
     @media (max-width: 900px) {
@@ -697,6 +720,9 @@
         </select>
         <input type="text" id="actuelle-desc" placeholder="Description (optionnel)" />
         <button onclick="addTask('actuelle')">+</button>
+        <label class="task-date" for="actuelle-date">Date (optionnelle)
+          <input type="date" id="actuelle-date" min="0100-01-01" max="9999-12-31" />
+        </label>
       </div>
       <ul id="actuelle-list"></ul>
       <p class="empty" id="actuelle-empty">Rien en cours pour le moment.</p>
@@ -729,6 +755,9 @@
         </select>
         <input type="text" id="lycee-desc" placeholder="Description (optionnel)" style="width:180px;border-radius:8px;padding:7px 10px;font-size:0.9rem;background:#23234a;color:#fff;border:1.5px solid #23234a;outline:none;" />
         <button onclick="addTask('lycee')">+</button>
+        <label class="task-date" for="lycee-date">Date (optionnelle)
+          <input type="date" id="lycee-date" min="0100-01-01" max="9999-12-31" />
+        </label>
       </div>
       <ul id="lycee-list"></ul>
       <p class="empty" id="lycee-empty">Rien à faire ici… pour l'instant 😅</p>
@@ -749,6 +778,9 @@
         </select>
         <input type="text" id="perso-desc" placeholder="Description (optionnel)" style="width:180px;border-radius:8px;padding:7px 10px;font-size:0.9rem;background:#23234a;color:#fff;border:1.5px solid #23234a;outline:none;" />
         <button onclick="addTask('perso')">+</button>
+        <label class="task-date" for="perso-date">Date (optionnelle)
+          <input type="date" id="perso-date" min="0100-01-01" max="9999-12-31" />
+        </label>
       </div>
       <ul id="perso-list"></ul>
       <p class="empty" id="perso-empty">C'est calme ici, profites-en 😌</p>
@@ -767,10 +799,25 @@
     <div class="calendar-legend">
       <span class="legend-lycee">Lycée</span>
       <span class="legend-perso">Perso</span>
+      <span class="legend-actuelle">Actuelle</span>
     </div>
+    <p class="calendar-help">Glisse une tâche sur un autre jour pour changer sa date, ou clique dessus pour choisir une date (aussi sur téléphone).</p>
     <div class="calendar-grid" id="calendar-grid"></div>
     <p class="calendar-empty" id="calendar-empty" hidden>Aucune date détectée ce mois-ci dans les descriptions.</p>
   </section>
+
+  <dialog class="auth-card calendar-date-dialog" id="calendar-date-dialog">
+    <form onsubmit="confirmCalendarDate(); return false;">
+      <h2>Changer la date</h2>
+      <p id="calendar-date-task"></p>
+      <label for="calendar-date-input">Nouvelle date</label>
+      <input type="date" id="calendar-date-input" min="0100-01-01" max="9999-12-31" required />
+      <div class="auth-actions">
+        <button type="button" onclick="document.getElementById('calendar-date-dialog').close()">Annuler</button>
+        <button class="primary" type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -780,7 +827,7 @@
 
     /* STORAGE */
     const CATEGORIES = ['lycee', 'perso', 'actuelle'];
-    const CALENDAR_CATEGORIES = ['lycee', 'perso'];
+    const CALENDAR_CATEGORIES = CATEGORIES;
     const KEYS = {
       lycee: 'tasks_lycee_v2',
       perso: 'tasks_perso_v2',
@@ -1068,6 +1115,8 @@
       juillet: 6, aout: 7, septembre: 8, octobre: 9, novembre: 10, decembre: 11,
     };
     let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    let calendarDrag = null;
+    let calendarEdit = null;
 
     function normalizeFrench(value) {
       return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -1081,26 +1130,83 @@
         : null;
     }
 
-    function extractDates(description) {
-      const normalized = normalizeFrench(description || '');
-      const dates = new Map();
-      const add = (day, month, year) => {
+    function findDateMatches(description) {
+      const matches = [];
+      const add = (match, day, month, year) => {
         const date = createValidDate(Number(day), Number(month), year == null ? null : Number(year));
         if (!date) return;
-        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        dates.set(key, date);
+        matches.push({ index: match.index, text: match[0], date });
       };
 
-      for (const match of normalized.matchAll(/\b(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?\b/g)) {
-        add(match[1], Number(match[2]) - 1, match[3]);
+      for (const match of description.matchAll(/\b(\d{1,2})[\/.-](\d{1,2})(?:[\/.-](\d{2,4}))?\b/g)) {
+        add(match, match[1], Number(match[2]) - 1, match[3]);
       }
 
-      const monthNames = Object.keys(MONTHS).join('|');
-      const writtenDate = new RegExp(`\\b(\\d{1,2})(?:er)?\\s+(${monthNames})(?:\\s+(\\d{2,4}))?\\b`, 'g');
-      for (const match of normalized.matchAll(writtenDate)) {
-        add(match[1], MONTHS[match[2]], match[3]);
+      const monthNames = 'janvier|f[eé](?:\\u0301)?vrier|mars|avril|mai|juin|juillet|ao[uû](?:\\u0302)?t|septembre|octobre|novembre|d[eé](?:\\u0301)?cembre';
+      const writtenDate = new RegExp(`\\b(\\d{1,2})(?:er)?\\s+(${monthNames})(?:\\s+(\\d{2,4}))?\\b`, 'gi');
+      for (const match of description.matchAll(writtenDate)) {
+        add(match, match[1], MONTHS[normalizeFrench(match[2])], match[3]);
       }
-      return [...dates.values()];
+      return matches.sort((a, b) => a.index - b.index);
+    }
+
+    function extractDates(description) {
+      return [...new Map(findDateMatches(description || '').map(match => [dateKey(match.date), match.date])).values()];
+    }
+
+    function formatTaskDate(date) {
+      return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+    }
+
+    function dateInputValue(date) {
+      return `${String(date.getFullYear()).padStart(4, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    function replaceTaskDate(value, sourceDate, targetDate) {
+      const matches = findDateMatches(value).filter(match => dateKey(match.date) === dateKey(sourceDate));
+      for (const match of matches.reverse()) {
+        value = value.slice(0, match.index) + formatTaskDate(targetDate) + value.slice(match.index + match.text.length);
+      }
+      return value;
+    }
+
+    function appendTaskDate(description, date) {
+      if (extractDates(description).some(existing => dateKey(existing) === dateKey(date))) return description;
+      return `${description}${description ? '\n' : ''}Date : ${formatTaskDate(date)}`;
+    }
+
+    function rescheduleCalendarTask(item, targetDate) {
+      const tasks = load(item.cat);
+      // A sync or another edit may have replaced the task since the interaction began.
+      const index = tasks.indexOf(item.task);
+      if (index === -1) {
+        console.error('La tâche a changé pendant le déplacement.');
+        setSyncStatus('La tâche a changé. Réessaie avec sa version actuelle.', 'offline');
+        return;
+      }
+      tasks[index] = {
+        ...item.task,
+        text: replaceTaskDate(item.task.text, item.date, targetDate),
+        desc: appendTaskDate(replaceTaskDate(item.task.desc, item.date, targetDate), targetDate),
+      };
+      save(item.cat, tasks);
+      render(item.cat);
+    }
+
+    function openCalendarDate(item) {
+      calendarEdit = item;
+      document.getElementById('calendar-date-task').textContent = item.task.text;
+      document.getElementById('calendar-date-input').value = dateInputValue(item.date);
+      document.getElementById('calendar-date-dialog').showModal();
+    }
+
+    function confirmCalendarDate() {
+      const input = document.getElementById('calendar-date-input');
+      if (!input.reportValidity()) return;
+      const [year, month, day] = input.value.split('-').map(Number);
+      rescheduleCalendarTask(calendarEdit, createValidDate(day, month - 1, year));
+      document.getElementById('calendar-date-dialog').close();
+      calendarEdit = null;
     }
 
     function getCalendarEvents() {
@@ -1148,6 +1254,23 @@
         date.setDate(gridStart.getDate() + i);
         const day = document.createElement('div');
         day.className = 'calendar-day';
+        day.dataset.date = dateInputValue(date);
+        day.addEventListener('dragover', e => {
+          if (!calendarDrag) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          day.classList.add('drag-over');
+        });
+        day.addEventListener('dragleave', e => {
+          if (!day.contains(e.relatedTarget)) day.classList.remove('drag-over');
+        });
+        day.addEventListener('drop', e => {
+          if (!calendarDrag) return;
+          e.preventDefault();
+          const item = calendarDrag;
+          calendarDrag = null;
+          rescheduleCalendarTask(item, date);
+        });
         if (date.getMonth() !== calendarDate.getMonth()) day.classList.add('outside');
         if (dateKey(date) === todayKey) day.classList.add('today');
 
@@ -1156,11 +1279,27 @@
         number.textContent = date.getDate();
         day.appendChild(number);
 
-        (eventsByDate.get(dateKey(date)) || []).forEach(({ cat, task }) => {
-          const event = document.createElement('span');
+        (eventsByDate.get(dateKey(date)) || []).forEach(item => {
+          const { cat, task } = item;
+          const event = document.createElement('button');
+          event.type = 'button';
           event.className = `calendar-event ${cat}`;
           event.textContent = task.text;
-          event.title = `${cat === 'lycee' ? 'Lycée' : 'Perso'} — ${task.text}\n${task.desc}`;
+          event.title = `${cat === 'lycee' ? 'Lycée' : cat === 'perso' ? 'Perso' : 'Actuelle'} — ${task.text}\n${task.desc}`;
+          event.setAttribute('aria-label', `${task.text}, ${formatTaskDate(date)} : changer la date`);
+          event.draggable = true;
+          event.onclick = () => openCalendarDate(item);
+          event.addEventListener('dragstart', e => {
+            calendarDrag = item;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', task.text);
+            event.classList.add('dragging');
+          });
+          event.addEventListener('dragend', () => {
+            calendarDrag = null;
+            event.classList.remove('dragging');
+            grid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+          });
           day.appendChild(event);
           if (date.getMonth() === calendarDate.getMonth()) visibleEvents++;
         });
@@ -1444,15 +1583,22 @@
       const input = document.getElementById(cat + '-input');
       const tagSel = document.getElementById(cat + '-tag');
       const descInput = document.getElementById(cat + '-desc');
+      const dateInput = document.getElementById(cat + '-date');
       const text  = input.value.trim();
       const tag   = tagSel.value;
-      const desc  = descInput.value.trim();
+      let desc = descInput.value.trim();
       if (!text) { input.focus(); return; }
+      if (!dateInput.reportValidity()) return;
+      if (dateInput.value) {
+        const [year, month, day] = dateInput.value.split('-').map(Number);
+        desc = appendTaskDate(desc, createValidDate(day, month - 1, year));
+      }
       const tasks = load(cat);
       tasks.unshift({ text, tag, desc, done: false, goal: false });
       save(cat, tasks);
       input.value = '';
       descInput.value = '';
+      dateInput.value = '';
       tagSel.value = 'normal';
       render(cat); input.focus();
     }

@@ -17,3 +17,16 @@ appareils en quelques secondes.
 
 La version publiee sur GitHub Pages fonctionne aussi en 4G ou 5G et ne
 necessite pas que le PC reste allume.
+
+RETROPLANNING
+=============
+Lors de la creation d'une tache, le champ "Date (optionnelle)" permet de
+choisir un jour dans le calendrier. La date est ajoutee a la description.
+Les taches Lycee, Perso et Actuelle apparaissent dans le retroplanning.
+
+Glissez une tache du retroplanning sur un autre jour pour changer sa date.
+La date correspondante est remplacee dans la description (et dans le titre
+si elle y figurait), sans effacer le reste du texte ni les autres dates.
+Cliquez sur une tache pour choisir une nouvelle date, notamment sur telephone
+ou pour la deplacer vers un autre mois. Les changements sont synchronises
+comme les autres modifications.
