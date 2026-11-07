@@ -42,3 +42,20 @@ Prune). Les curseurs Rouge, Vert et Bleu reglent la balance des couleurs
 en direct, avec un fond sombre pour garder le texte lisible.
 Les couleurs sont conservees sur cet appareil apres rechargement.
 "Reinitialiser" retablit l'ambiance Nuit.
+
+L'option "Degrade de gauche a droite" permet de choisir independamment
+la couleur gauche et la couleur droite. Les cartes restent sombres pour
+garder le texte lisible. Le degrade est aussi conserve sur cet appareil.
+
+MODIFICATION ET INSTALLATION
+===========================
+Cliquez sur le titre d'une tache (ou d'un objectif) pour le modifier.
+Ses dates, son etat et son epinglage sont conserves.
+
+Le bouton "Installer l'app" propose l'installation quand le navigateur
+la permet. Sur Android : Chrome > menu > Installer l'application.
+Sur iPhone : Safari > Partager > Sur l'ecran d'accueil.
+Utilisez la version HTTPS GitHub Pages, pas l'adresse Wi-Fi HTTP.
+Apres une premiere ouverture connectee, l'interface est mise en cache.
+Les changements hors ligne restent sur cet appareil jusqu'au retour
+de la connexion. L'installation n'est pas une publication App Store.

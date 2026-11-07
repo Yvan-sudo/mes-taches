@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mes Tâches</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <meta name="theme-color" content="#171625" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
@@ -626,8 +632,20 @@
     .color-channel { display: grid; grid-template-columns: 50px 1fr 32px; align-items: center; gap: 10px; margin: 15px 0; font-size: 0.8rem; }
     .color-channel input { width: 100%; accent-color: var(--channel); }
     .color-channel output { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
-    .theme-preview { height: 60px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg); margin-top: 20px; }
-    body { background-image: radial-gradient(ellipse at 15% 0%, var(--theme-glow, transparent), transparent 65%); background-attachment: fixed; }
+    .theme-preview { height: 60px; border-radius: 14px; border: 1px solid var(--border); background-color: var(--bg); background-image: var(--background-image, none); margin-top: 20px; }
+    body { background-image: var(--background-image, radial-gradient(ellipse at 15% 0%, var(--theme-glow, transparent), transparent 65%)); background-attachment: fixed; }
+    button.task-title { display: block; border: 0; padding: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+    button.task-title:hover { color: #a5b4fc; }
+    .popup-input { width: 100%; margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; padding: 12px; color: var(--text); background: rgba(255,255,255,0.05); font: inherit; }
+    .theme-mode { display: flex; align-items: center; gap: 10px; margin: 18px 0; font-size: 0.85rem; }
+    .gradient-colors { display: flex; justify-content: space-between; gap: 16px; }
+    .gradient-colors label { display: grid; gap: 8px; font-size: 0.8rem; color: var(--muted); }
+    .gradient-colors input { width: 110px; height: 42px; padding: 3px; border: 1px solid var(--border); border-radius: 10px; background: transparent; cursor: pointer; }
+    body.gradient-background header, body.gradient-background .view-tabs {
+      background: var(--card); padding: 12px; border-radius: 14px;
+    }
+    .install-help { font-size: 0.85rem; color: var(--muted); line-height: 1.7; margin-top: 16px; }
+    #edit-message { min-height: 1.3em; color: #fbbf24; font-size: 0.8rem; margin-top: 10px; }
     .calendar-empty { color: var(--muted); text-align: center; padding: 20px; font-size: 0.85rem; }
 
     @media (max-width: 900px) {
@@ -672,6 +690,7 @@
     <span class="sync-status" id="sync-status" role="status">Connexion…</span>
     <button class="account-button" id="logout-button" type="button" onclick="signOut()" hidden>Déconnexion</button>
     <button class="account-button" type="button" onclick="openTheme()" aria-haspopup="dialog">✦ Fond & couleurs</button>
+    <button class="account-button" id="install-button" type="button" onclick="installApp()">Installer l’app</button>
   </header>
 
   <div class="view-tabs" role="tablist" aria-label="Navigation">
@@ -777,6 +796,30 @@
     </div>
   </dialog>
 
+  <dialog class="popup" id="edit-dialog" aria-labelledby="edit-heading">
+    <form onsubmit="confirmTaskEdit(); return false;">
+      <div class="popup-header">
+        <h2 id="edit-heading">Modifier la tâche</h2>
+        <button class="popup-close" type="button" onclick="document.getElementById('edit-dialog').close()" aria-label="Fermer la modification">×</button>
+      </div>
+      <label for="edit-title">Titre</label>
+      <input class="popup-input" id="edit-title" maxlength="500" required />
+      <p id="edit-message" role="status"></p>
+      <div class="popup-actions">
+        <button type="button" onclick="document.getElementById('edit-dialog').close()">Annuler</button>
+        <button type="submit">Enregistrer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="popup" id="install-dialog" aria-labelledby="install-heading">
+    <div class="popup-header">
+      <h2 id="install-heading">L’app sur ton téléphone</h2>
+      <button class="popup-close" type="button" onclick="document.getElementById('install-dialog').close()" aria-label="Fermer l’installation">×</button>
+    </div>
+    <p class="install-help" id="install-help"></p>
+  </dialog>
+
   <dialog class="popup" id="theme-dialog" aria-labelledby="theme-heading">
     <div class="popup-header">
       <h2 id="theme-heading">Fond & couleurs</h2>
@@ -801,6 +844,18 @@
       <input id="theme-blue" type="range" min="0" max="255" oninput="changeThemeBalance()" />
       <output id="theme-blue-value" for="theme-blue"></output>
     </label>
+    <label class="theme-mode" for="theme-gradient">
+      <input id="theme-gradient" type="checkbox" onchange="changeGradient()" />
+      Dégradé de gauche à droite
+    </label>
+    <div class="gradient-colors">
+      <label for="gradient-left">Couleur à gauche
+        <input id="gradient-left" type="color" value="#17163b" oninput="changeGradient()" />
+      </label>
+      <label for="gradient-right">Couleur à droite
+        <input id="gradient-right" type="color" value="#123d35" oninput="changeGradient()" />
+      </label>
+    </div>
     <div class="theme-preview" aria-label="Aperçu du fond"></div>
     <p class="popup-subtitle">Le réglage est conservé sur cet appareil.</p>
     <div class="popup-actions">
@@ -859,6 +914,7 @@
     function save(cat, tasks) {
       taskState[cat] = tasks.map(normalizeTask).filter(task => task.text);
       localStorage.setItem(userStorageKey(cat), JSON.stringify(taskState[cat]));
+      localStorage.setItem(userStorageKey('lycee') + '_pending', '1');
       hasUnsyncedChanges = true;
       setSyncStatus('Enregistrement…');
       clearTimeout(syncTimer);
@@ -940,6 +996,7 @@
           body: JSON.stringify({ state: snapshot() }),
         });
         serverRevision = Number(payload.revision) || serverRevision;
+        if (!hasUnsyncedChanges) localStorage.removeItem(userStorageKey('lycee') + '_pending');
         setSyncStatus('Synchronisé', 'online');
       } catch (error) {
         console.error(error);
@@ -969,13 +1026,14 @@
     }
 
     async function initializeSync() {
+      hasUnsyncedChanges = localStorage.getItem(userStorageKey('lycee') + '_pending') === '1';
       CATEGORIES.forEach(render);
       try {
         const payload = await requestState();
         const serverHasTasks = CATEGORIES.some(cat => payload.state?.[cat]?.length);
         const localHasTasks = CATEGORIES.some(cat => taskState[cat].length);
         serverRevision = Number(payload.revision) || 0;
-        if (!serverHasTasks && localHasTasks) {
+        if (hasUnsyncedChanges || (!serverHasTasks && localHasTasks)) {
           hasUnsyncedChanges = true;
           await pushState();
         } else {
@@ -1442,9 +1500,12 @@
         top.appendChild(source);
         top.appendChild(unpin);
 
-        const title = document.createElement('div');
-        title.className = 'goal-title' + (task.done ? ' goal-done' : '');
+        const title = document.createElement('button');
+        title.type = 'button';
+        title.className = 'goal-title task-title' + (task.done ? ' goal-done' : '');
         title.textContent = task.text;
+        title.setAttribute('aria-label', `Modifier ${task.text}`);
+        title.onclick = () => openTaskEdit(cat, task);
         item.appendChild(top);
         item.appendChild(title);
 
@@ -1532,8 +1593,11 @@
         const main = document.createElement('div');
         main.className = 'task-main';
 
-        const span = document.createElement('span');
-        span.className = 'text'; span.textContent = task.text;
+        const span = document.createElement('button');
+        span.type = 'button';
+        span.className = 'text task-title'; span.textContent = task.text;
+        span.setAttribute('aria-label', `Modifier ${task.text}`);
+        span.onclick = () => openTaskEdit(cat, task);
 
         main.appendChild(span);
         const dates = extractDates(`${task.text} ${task.desc}`);
@@ -1661,6 +1725,43 @@
       save(cat, tasks); render(cat);
     }
 
+    let taskEdit = null;
+
+    function openTaskEdit(cat, task) {
+      taskEdit = { cat, task };
+      document.getElementById('edit-title').value = task.text;
+      document.getElementById('edit-message').textContent = '';
+      document.getElementById('edit-dialog').showModal();
+      document.getElementById('edit-title').focus();
+      document.getElementById('edit-title').select();
+    }
+
+    function confirmTaskEdit() {
+      const input = document.getElementById('edit-title');
+      const text = input.value.trim();
+      if (!text) {
+        document.getElementById('edit-message').textContent = 'Le titre ne peut pas être vide.';
+        input.focus();
+        return;
+      }
+      const tasks = load(taskEdit.cat);
+      const index = tasks.indexOf(taskEdit.task);
+      if (index === -1) {
+        document.getElementById('edit-message').textContent = 'La tâche a changé sur un autre appareil. Ferme et réessaie.';
+        return;
+      }
+      let desc = taskEdit.task.desc;
+      extractDates(taskEdit.task.text).forEach(date => {
+        if (!extractDates(`${text} ${desc}`).some(existing => dateKey(existing) === dateKey(date))) {
+          desc = appendTaskDate(desc, date);
+        }
+      });
+      tasks[index] = { ...taskEdit.task, text, desc };
+      save(taskEdit.cat, tasks);
+      render(taskEdit.cat);
+      document.getElementById('edit-dialog').close();
+    }
+
     const THEME_PRESETS = {
       nuit: [65, 60, 115],
       ocean: [20, 125, 205],
@@ -1669,13 +1770,21 @@
     };
     const THEME_KEY = 'tasks_background_v1';
     let themeColors = [...THEME_PRESETS.nuit];
+    let gradient = { enabled: false, left: '#17163b', right: '#123d35' };
 
     function applyTheme() {
       const root = document.documentElement.style;
+      document.body.classList.toggle('gradient-background', gradient.enabled);
       root.setProperty('--bg', `rgb(${themeColors.map(value => Math.round(7 + value * 0.12)).join(',')})`);
       root.setProperty('--card', `rgb(${themeColors.map(value => Math.round(19 + value * 0.13)).join(',')})`);
       root.setProperty('--nav-bg', 'var(--card)');
       root.setProperty('--theme-glow', `rgba(${themeColors.join(',')},0.1)`);
+      root.setProperty('--background-image', gradient.enabled
+        ? `linear-gradient(to right, ${gradient.left}, ${gradient.right})`
+        : 'radial-gradient(ellipse at 15% 0%, var(--theme-glow), transparent 65%)');
+      document.getElementById('theme-gradient').checked = gradient.enabled;
+      document.getElementById('gradient-left').value = gradient.left;
+      document.getElementById('gradient-right').value = gradient.right;
       ['red', 'green', 'blue'].forEach((channel, index) => {
         document.getElementById(`theme-${channel}`).value = themeColors[index];
         document.getElementById(`theme-${channel}-value`).value = themeColors[index];
@@ -1688,7 +1797,7 @@
     function saveTheme() {
       applyTheme();
       try {
-        localStorage.setItem(THEME_KEY, JSON.stringify(themeColors));
+        localStorage.setItem(THEME_KEY, JSON.stringify({ colors: themeColors, gradient }));
       } catch (error) {
         console.error('Impossible de sauvegarder les couleurs.', error);
         setSyncStatus('Couleurs appliquées, mais non sauvegardées sur cet appareil.', 'offline');
@@ -1697,6 +1806,16 @@
 
     function setThemePreset(name) {
       themeColors = [...THEME_PRESETS[name]];
+      gradient.enabled = false;
+      saveTheme();
+    }
+
+    function changeGradient() {
+      gradient = {
+        enabled: document.getElementById('theme-gradient').checked,
+        left: document.getElementById('gradient-left').value,
+        right: document.getElementById('gradient-right').value,
+      };
       saveTheme();
     }
 
@@ -1713,11 +1832,19 @@
       try {
         const stored = localStorage.getItem(THEME_KEY);
         if (stored !== null) {
-          const colors = JSON.parse(stored);
+          const settings = JSON.parse(stored);
+          const colors = Array.isArray(settings) ? settings : settings?.colors;
           if (!Array.isArray(colors) || colors.length !== 3 || !colors.every(value => Number.isInteger(value) && value >= 0 && value <= 255)) {
             throw new Error('Balance de couleurs enregistrée invalide.');
           }
           themeColors = colors;
+          if (!Array.isArray(settings)) {
+            const value = settings.gradient;
+            if (!value || typeof value.enabled !== 'boolean' || !/^#[0-9a-f]{6}$/i.test(value.left) || !/^#[0-9a-f]{6}$/i.test(value.right)) {
+              throw new Error('Dégradé enregistré invalide.');
+            }
+            gradient = value;
+          }
         }
       } catch (error) {
         console.error('Impossible de lire les couleurs enregistrées.', error);
@@ -1727,7 +1854,8 @@
     }
 
     document.getElementById('calendar-date-dialog').addEventListener('close', () => { calendarEdit = null; });
-    ['calendar-date-dialog', 'theme-dialog'].forEach(id => {
+    document.getElementById('edit-dialog').addEventListener('close', () => { taskEdit = null; });
+    ['calendar-date-dialog', 'theme-dialog', 'edit-dialog', 'install-dialog'].forEach(id => {
       const dialog = document.getElementById(id);
       dialog.addEventListener('click', e => {
         const bounds = dialog.getBoundingClientRect();
@@ -1745,6 +1873,46 @@
     window.addEventListener('offline', () => setSyncStatus('Hors ligne — données locales', 'offline'));
     initializeTheme();
     initializeApp();
+
+    let installPrompt = null;
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      installPrompt = event;
+    });
+    window.addEventListener('appinstalled', () => {
+      installPrompt = null;
+      document.getElementById('install-button').hidden = true;
+    });
+    if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) {
+      document.getElementById('install-button').hidden = true;
+    }
+
+    async function installApp() {
+      if (installPrompt) {
+        const prompt = installPrompt;
+        installPrompt = null;
+        try {
+          await prompt.prompt();
+          await prompt.userChoice;
+        } catch (error) {
+          console.error('Installation impossible.', error);
+          setSyncStatus('Installation impossible. Utilise le menu du navigateur.', 'offline');
+        }
+        return;
+      }
+      document.getElementById('install-help').textContent =
+        'Sur iPhone : ouvre le site dans Safari, touche Partager puis « Sur l’écran d’accueil ». ' +
+        'Sur Android : ouvre-le dans Chrome, menu ⋮ puis « Installer l’application » ou « Ajouter à l’écran d’accueil ». ' +
+        'Utilise la version https://yvan-sudo.github.io/mes-taches/. Une première ouverture connectée est nécessaire.';
+      document.getElementById('install-dialog').showModal();
+    }
+
+    if ('serviceWorker' in navigator && window.isSecureContext) {
+      navigator.serviceWorker.register('./sw.js').catch(error => {
+        console.error('Préparation de l’application hors ligne impossible.', error);
+        setSyncStatus('Mode hors ligne indisponible. Recharge la page en ligne.', 'offline');
+      });
+    }
   </script>
 </body>
 </html>
