@@ -16,7 +16,7 @@
       --card: #171625;
       --nav-bg: #171625;
       --text: #e2e8f0;
-      --muted: #64748b;
+      --muted: #aab6ca;
       --border: rgba(255,255,255,0.07);
     }
 
@@ -82,7 +82,7 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: rgba(11,10,16,0.96);
+      background: var(--bg);
     }
     .auth-overlay[hidden] { display: none; }
     .auth-card {
@@ -191,12 +191,6 @@
       color: #fff7ed;
       line-height: 1.35;
     }
-    .goal-desc {
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.72);
-      line-height: 1.4;
-      white-space: pre-line;
-    }
     .goal-done {
       opacity: 0.58;
       text-decoration: line-through;
@@ -220,21 +214,9 @@
     .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 960px; margin: 0 auto; }
     @media (max-width: 620px) { .columns { grid-template-columns: 1fr; } }
     @media (max-width: 820px) { .goal-list { grid-template-columns: 1fr; } }
-    @media (max-width: 900px) {
-      .input-row {
-        grid-template-columns: minmax(0, 1fr) minmax(110px, 0.55fr) 38px;
-      }
-      .input-row input[id$='-desc'] {
-        grid-column: 1 / -1;
-      }
-    }
     @media (max-width: 520px) {
-      .goal-board-header,
-      .input-row {
+      .goal-board-header {
         grid-template-columns: 1fr;
-      }
-      .input-row button {
-        width: 100%;
       }
     }
 
@@ -265,7 +247,7 @@
     /* INPUT */
     .input-row {
       display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(110px, 0.7fr) minmax(0, 1.2fr) 38px;
+      grid-template-columns: minmax(0, 1fr) auto 34px;
       gap: 8px;
       align-items: stretch;
       width: 100%;
@@ -282,33 +264,14 @@
       outline: none;
       transition: border-color 0.2s, background 0.2s;
     }
-    .input-row select {
-      min-width: 0;
-      width: 100%;
-      background: rgba(255,255,255,0.05) !important;
-      border: 1.5px solid rgba(255,255,255,0.1) !important;
-      border-radius: 10px !important;
-      color: var(--text) !important;
-      font-family: inherit;
-      font-size: 0.9rem;
-      padding: 9px 13px !important;
-      outline: none;
-    }
     .input-row input,
-    .input-row button,
-    .input-row select {
+    .input-row button {
       min-width: 0;
       width: 100%;
-    }
-    #lycee-desc,
-    #perso-desc {
-      width: 100% !important;
     }
     .input-row input::placeholder { color: var(--muted); }
     .card.lycee .input-row input:focus { border-color: var(--blue); background: rgba(99,102,241,0.08); }
     .card.perso  .input-row input:focus { border-color: var(--green); background: rgba(16,185,129,0.08); }
-    .card.lycee .input-row select:focus { border-color: var(--blue) !important; background: rgba(99,102,241,0.08) !important; }
-    .card.perso  .input-row select:focus { border-color: var(--green) !important; background: rgba(16,185,129,0.08) !important; }
     .input-row button {
       border: none;
       border-radius: 10px;
@@ -331,44 +294,9 @@
     /* LIST */
     ul { display: flex; flex-direction: column; gap: 7px; }
 
-    /* TAGS */
-    .tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 600;
-      border-radius: 6px;
-      padding: 2px 8px;
-      margin-right: 7px;
-      margin-bottom: 2px;
-      letter-spacing: 0.02em;
-      vertical-align: middle;
-      color: #fff;
-    }
-    .tag-normal { background: #64748b; }
-    .tag-important { background: #f59e0b; }
-    .tag-urgent { background: #ef4444; }
-
-    .desc {
-      display: block;
-      font-size: 0.82rem;
-      color: #a5b4fc;
-      margin-top: 2px;
-      margin-left: 28px;
-      white-space: pre-line;
-      opacity: 0.85;
-    }
-
     .task-main {
       flex: 1;
       min-width: 0;
-    }
-
-    .task-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 2px;
     }
 
     .goal-pin {
@@ -451,6 +379,7 @@
       max-width: 1180px;
       margin-bottom: 10px;
       flex-direction: row;
+      flex-wrap: wrap;
       justify-content: space-between;
     }
     header h1 { font-size: 1.55rem; }
@@ -496,11 +425,6 @@
       border-radius: 9px;
     }
     .goal-title { font-size: 0.8rem; }
-    .goal-desc {
-      font-size: 0.7rem;
-      max-height: 2.8em;
-      overflow: hidden;
-    }
     .goal-toggle { width: 24px; height: 24px; font-size: 0.85rem; }
     .columns { gap: 10px; }
     .card {
@@ -509,25 +433,12 @@
       border-radius: 12px;
     }
     .input-row {
-      grid-template-columns: minmax(0, 1.45fr) minmax(88px, 0.65fr) minmax(0, 1.15fr) 34px;
       gap: 6px;
     }
-    .input-row input,
-    .input-row select { font-size: 0.8rem; padding: 7px 9px !important; }
+    .input-row input { font-size: 0.8rem; padding: 7px 9px !important; }
     .input-row button { width: 34px; height: 34px; }
-    .input-row .task-date {
-      grid-column: 1 / -1;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 0.75rem;
-    }
-    .task-date input { flex: 0 1 160px; color-scheme: dark; }
     ul { gap: 5px; }
     li { padding: 6px 8px; font-size: 0.82rem; gap: 7px; }
-    .desc { font-size: 0.74rem; margin-left: 0; }
-    .tag { font-size: 0.64rem; padding: 1px 6px; }
     .empty { padding: 9px 0; }
 
     .current-wrap {
@@ -653,9 +564,70 @@
     .calendar-event.dragging { opacity: 0.35; }
     .calendar-event:focus-visible { outline: 2px solid var(--blue-light); }
     .calendar-help { color: var(--muted); font-size: 0.75rem; margin-bottom: 10px; }
-    .calendar-date-dialog { margin: auto; color: var(--text); }
-    .calendar-date-dialog::backdrop { background: rgba(0,0,0,0.7); }
-    .calendar-date-dialog input { color-scheme: dark; }
+    .input-row .date-trigger, .task-date-button {
+      width: auto;
+      height: auto;
+      padding: 7px 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .task-date-button { display: block; margin-top: 5px; color: #c7d2fe; }
+    .card .input-row .date-trigger { background: rgba(255,255,255,0.06); }
+    .popup {
+      margin: auto;
+      width: min(380px, calc(100vw - 28px));
+      max-height: calc(100dvh - 32px);
+      overflow-y: auto;
+      padding: 22px;
+      color: var(--text);
+      background: var(--card);
+      border: 1px solid rgba(148,163,184,0.22);
+      border-radius: 24px;
+      box-shadow: 0 28px 100px rgba(0,0,0,0.55);
+    }
+    .popup::backdrop { background: rgba(5,8,18,0.6); backdrop-filter: blur(8px); }
+    .popup-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .popup h2 { font-size: 1.1rem; }
+    .popup-subtitle { color: var(--muted); font-size: 0.8rem; margin: 8px 0 20px; overflow-wrap: anywhere; }
+    .popup button { font-family: inherit; cursor: pointer; color: var(--text); }
+    .popup-close { border: 0; background: rgba(255,255,255,0.06); width: 32px; height: 32px; border-radius: 50%; font-size: 1.2rem; }
+    .picker-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .picker-toolbar h3 { font-size: 0.95rem; text-transform: capitalize; }
+    .picker-grid { display: grid; grid-template-columns: repeat(7, minmax(0,1fr)); gap: 5px; }
+    .picker-weekday { color: var(--muted); text-align: center; font-size: 0.7rem; padding-bottom: 8px; }
+    .picker-day {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: transparent;
+      aspect-ratio: 1;
+      font-size: 0.85rem;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .picker-day.outside { color: var(--muted); }
+    .picker-day.today { border-color: rgba(129,140,248,0.65); }
+    .picker-day.selected { background: #6366f1; color: white; box-shadow: 0 4px 14px rgba(99,102,241,0.3); }
+    .picker-day:hover { background: rgba(129,140,248,0.25); }
+    .picker-day.selected:hover { background: #818cf8; }
+    .picker-day:focus-visible, .popup button:focus-visible, .date-trigger:focus-visible, .task-date-button:focus-visible {
+      outline: 2px solid var(--blue-light); outline-offset: 2px;
+    }
+    .popup-actions { display: flex; justify-content: space-between; gap: 8px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .popup-actions button { border: 0; background: rgba(255,255,255,0.06); padding: 9px 12px; border-radius: 10px; font-size: 0.8rem; }
+    .theme-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+    .theme-preset { border: 1px solid var(--border); border-radius: 12px; padding: 12px 4px; background: rgba(255,255,255,0.04); font-size: 0.7rem; }
+    .theme-preset::before { content: ''; display: block; width: 24px; height: 24px; border-radius: 50%; margin: 0 auto 7px; background: var(--swatch); }
+    .theme-preset[aria-pressed="true"] { border-color: var(--blue-light); background: rgba(129,140,248,0.14); }
+    .color-channel { display: grid; grid-template-columns: 50px 1fr 32px; align-items: center; gap: 10px; margin: 15px 0; font-size: 0.8rem; }
+    .color-channel input { width: 100%; accent-color: var(--channel); }
+    .color-channel output { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+    .theme-preview { height: 60px; border-radius: 14px; border: 1px solid var(--border); background: var(--bg); margin-top: 20px; }
+    body { background-image: radial-gradient(ellipse at 15% 0%, var(--theme-glow, transparent), transparent 65%); background-attachment: fixed; }
     .calendar-empty { color: var(--muted); text-align: center; padding: 20px; font-size: 0.85rem; }
 
     @media (max-width: 900px) {
@@ -669,6 +641,10 @@
       .goal-list { grid-template-columns: repeat(5, 140px); }
       .calendar-grid { min-width: 700px; }
       .retroplanning { overflow-x: auto; }
+      .input-row { grid-template-columns: minmax(0,1fr) 34px; }
+      .input-row .date-trigger { grid-row: 2; grid-column: 1 / -1; justify-self: start; }
+      .input-row .add-task { grid-column: 2; grid-row: 1; }
+      .popup { padding: 18px; }
     }
   </style>
 </head>
@@ -695,6 +671,7 @@
     <span class="date" id="today-date"></span>
     <span class="sync-status" id="sync-status" role="status">Connexion…</span>
     <button class="account-button" id="logout-button" type="button" onclick="signOut()" hidden>Déconnexion</button>
+    <button class="account-button" type="button" onclick="openTheme()" aria-haspopup="dialog">✦ Fond & couleurs</button>
   </header>
 
   <div class="view-tabs" role="tablist" aria-label="Navigation">
@@ -713,16 +690,8 @@
       </div>
       <div class="input-row">
         <input type="text" id="actuelle-input" placeholder="Ce que je fais maintenant…" />
-        <select id="actuelle-tag">
-          <option value="normal">Normal</option>
-          <option value="important">Important</option>
-          <option value="urgent">Urgent</option>
-        </select>
-        <input type="text" id="actuelle-desc" placeholder="Description (optionnel)" />
-        <button onclick="addTask('actuelle')">+</button>
-        <label class="task-date" for="actuelle-date">Date (optionnelle)
-          <input type="date" id="actuelle-date" min="0100-01-01" max="9999-12-31" />
-        </label>
+        <button class="date-trigger" id="actuelle-date" type="button" onclick="openCreationDate('actuelle')" aria-haspopup="dialog">▦ Date</button>
+        <button class="add-task" type="button" onclick="addTask('actuelle')" aria-label="Ajouter une tâche Actuelle">+</button>
       </div>
       <ul id="actuelle-list"></ul>
       <p class="empty" id="actuelle-empty">Rien en cours pour le moment.</p>
@@ -748,16 +717,8 @@
       </div>
       <div class="input-row">
         <input type="text" id="lycee-input" placeholder="Nouvelle tâche…" />
-        <select id="lycee-tag" style="border-radius:8px;padding:7px 8px;font-size:0.9rem;background:#23234a;color:#fff;border:1.5px solid #23234a;outline:none;">
-          <option value="normal">Normal</option>
-          <option value="important">Important</option>
-          <option value="urgent">Urgent</option>
-        </select>
-        <input type="text" id="lycee-desc" placeholder="Description (optionnel)" style="width:180px;border-radius:8px;padding:7px 10px;font-size:0.9rem;background:#23234a;color:#fff;border:1.5px solid #23234a;outline:none;" />
-        <button onclick="addTask('lycee')">+</button>
-        <label class="task-date" for="lycee-date">Date (optionnelle)
-          <input type="date" id="lycee-date" min="0100-01-01" max="9999-12-31" />
-        </label>
+        <button class="date-trigger" id="lycee-date" type="button" onclick="openCreationDate('lycee')" aria-haspopup="dialog">▦ Date</button>
+        <button class="add-task" type="button" onclick="addTask('lycee')" aria-label="Ajouter une tâche Lycée">+</button>
       </div>
       <ul id="lycee-list"></ul>
       <p class="empty" id="lycee-empty">Rien à faire ici… pour l'instant 😅</p>
@@ -771,16 +732,8 @@
       </div>
       <div class="input-row">
         <input type="text" id="perso-input" placeholder="Nouvelle tâche…" />
-        <select id="perso-tag" style="border-radius:8px;padding:7px 8px;font-size:0.9rem;background:#23234a;color:#fff;border:1.5px solid #23234a;outline:none;">
-          <option value="normal">Normal</option>
-          <option value="important">Important</option>
-          <option value="urgent">Urgent</option>
-        </select>
-        <input type="text" id="perso-desc" placeholder="Description (optionnel)" style="width:180px;border-radius:8px;padding:7px 10px;font-size:0.9rem;background:#23234a;color:#fff;border:1.5px solid #23234a;outline:none;" />
-        <button onclick="addTask('perso')">+</button>
-        <label class="task-date" for="perso-date">Date (optionnelle)
-          <input type="date" id="perso-date" min="0100-01-01" max="9999-12-31" />
-        </label>
+        <button class="date-trigger" id="perso-date" type="button" onclick="openCreationDate('perso')" aria-haspopup="dialog">▦ Date</button>
+        <button class="add-task" type="button" onclick="addTask('perso')" aria-label="Ajouter une tâche Perso">+</button>
       </div>
       <ul id="perso-list"></ul>
       <p class="empty" id="perso-empty">C'est calme ici, profites-en 😌</p>
@@ -803,20 +756,57 @@
     </div>
     <p class="calendar-help">Glisse une tâche sur un autre jour pour changer sa date, ou clique dessus pour choisir une date (aussi sur téléphone).</p>
     <div class="calendar-grid" id="calendar-grid"></div>
-    <p class="calendar-empty" id="calendar-empty" hidden>Aucune date détectée ce mois-ci dans les descriptions.</p>
+    <p class="calendar-empty" id="calendar-empty" hidden>Aucune tâche prévue ce mois-ci.</p>
   </section>
 
-  <dialog class="auth-card calendar-date-dialog" id="calendar-date-dialog">
-    <form onsubmit="confirmCalendarDate(); return false;">
-      <h2>Changer la date</h2>
-      <p id="calendar-date-task"></p>
-      <label for="calendar-date-input">Nouvelle date</label>
-      <input type="date" id="calendar-date-input" min="0100-01-01" max="9999-12-31" required />
-      <div class="auth-actions">
-        <button type="button" onclick="document.getElementById('calendar-date-dialog').close()">Annuler</button>
-        <button class="primary" type="submit">Enregistrer</button>
-      </div>
-    </form>
+  <dialog class="popup" id="calendar-date-dialog" aria-labelledby="picker-heading" aria-describedby="calendar-date-task">
+    <div class="popup-header">
+      <h2 id="picker-heading">Choisir une date</h2>
+      <button class="popup-close" type="button" onclick="document.getElementById('calendar-date-dialog').close()" aria-label="Fermer le calendrier">×</button>
+    </div>
+    <p class="popup-subtitle" id="calendar-date-task"></p>
+    <div class="picker-toolbar">
+      <button class="calendar-nav" id="picker-prev" type="button" onclick="changePickerMonth(-1)" aria-label="Mois précédent du sélecteur">‹</button>
+      <h3 id="picker-month" aria-live="polite"></h3>
+      <button class="calendar-nav" id="picker-next" type="button" onclick="changePickerMonth(1)" aria-label="Mois suivant du sélecteur">›</button>
+    </div>
+    <div class="picker-grid" id="picker-grid" role="group" aria-label="Jours du mois"></div>
+    <div class="popup-actions">
+      <button type="button" onclick="selectPickerDate(new Date())">Aujourd’hui</button>
+      <button id="picker-clear" type="button" onclick="selectPickerDate(null)">Sans date</button>
+    </div>
+  </dialog>
+
+  <dialog class="popup" id="theme-dialog" aria-labelledby="theme-heading">
+    <div class="popup-header">
+      <h2 id="theme-heading">Fond & couleurs</h2>
+      <button class="popup-close" type="button" onclick="document.getElementById('theme-dialog').close()" aria-label="Fermer les couleurs">×</button>
+    </div>
+    <p class="popup-subtitle">Choisis une ambiance et ajuste la balance des couleurs en direct.</p>
+    <div class="theme-presets">
+      <button class="theme-preset" type="button" data-theme="nuit" onclick="setThemePreset('nuit')" style="--swatch:#6366a5">Nuit</button>
+      <button class="theme-preset" type="button" data-theme="ocean" onclick="setThemePreset('ocean')" style="--swatch:#278cca">Océan</button>
+      <button class="theme-preset" type="button" data-theme="foret" onclick="setThemePreset('foret')" style="--swatch:#429d70">Forêt</button>
+      <button class="theme-preset" type="button" data-theme="prune" onclick="setThemePreset('prune')" style="--swatch:#b15baf">Prune</button>
+    </div>
+    <label class="color-channel" style="--channel:#f87171" for="theme-red">Rouge
+      <input id="theme-red" type="range" min="0" max="255" oninput="changeThemeBalance()" />
+      <output id="theme-red-value" for="theme-red"></output>
+    </label>
+    <label class="color-channel" style="--channel:#34d399" for="theme-green">Vert
+      <input id="theme-green" type="range" min="0" max="255" oninput="changeThemeBalance()" />
+      <output id="theme-green-value" for="theme-green"></output>
+    </label>
+    <label class="color-channel" style="--channel:#60a5fa" for="theme-blue">Bleu
+      <input id="theme-blue" type="range" min="0" max="255" oninput="changeThemeBalance()" />
+      <output id="theme-blue-value" for="theme-blue"></output>
+    </label>
+    <div class="theme-preview" aria-label="Aperçu du fond"></div>
+    <p class="popup-subtitle">Le réglage est conservé sur cet appareil.</p>
+    <div class="popup-actions">
+      <button type="button" onclick="setThemePreset('nuit')">Réinitialiser</button>
+      <button type="button" onclick="document.getElementById('theme-dialog').close()">Terminé</button>
+    </div>
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1117,6 +1107,8 @@
     let calendarDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let calendarDrag = null;
     let calendarEdit = null;
+    let pickerMonth = new Date(calendarDate);
+    const creationDates = Object.fromEntries(CATEGORIES.map(cat => [cat, null]));
 
     function normalizeFrench(value) {
       return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -1193,20 +1185,99 @@
       render(item.cat);
     }
 
-    function openCalendarDate(item) {
-      calendarEdit = item;
-      document.getElementById('calendar-date-task').textContent = item.task.text;
-      document.getElementById('calendar-date-input').value = dateInputValue(item.date);
+    function openDatePicker(context) {
+      calendarEdit = context;
+      const selected = context.item?.date || creationDates[context.cat];
+      const date = selected || new Date();
+      pickerMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      document.getElementById('calendar-date-task').textContent =
+        context.item ? context.item.task.text : 'Touche un jour pour le sélectionner.';
+      document.getElementById('picker-clear').hidden = Boolean(context.item);
+      renderDatePicker();
       document.getElementById('calendar-date-dialog').showModal();
+      const focusDay = document.querySelector('.picker-day.selected') ||
+        document.querySelector('.picker-day.today') || document.querySelector('.picker-day:not(.outside)');
+      focusDay?.focus();
     }
 
-    function confirmCalendarDate() {
-      const input = document.getElementById('calendar-date-input');
-      if (!input.reportValidity()) return;
-      const [year, month, day] = input.value.split('-').map(Number);
-      rescheduleCalendarTask(calendarEdit, createValidDate(day, month - 1, year));
+    function openCalendarDate(item) {
+      openDatePicker({ cat: item.cat, item });
+    }
+
+    function openCreationDate(cat) {
+      openDatePicker({ cat });
+    }
+
+    function selectPickerDate(date) {
+      if (calendarEdit.item) {
+        rescheduleCalendarTask(calendarEdit.item, date);
+      } else {
+        creationDates[calendarEdit.cat] = date;
+        updateCreationDate(calendarEdit.cat);
+      }
       document.getElementById('calendar-date-dialog').close();
-      calendarEdit = null;
+    }
+
+    function updateCreationDate(cat) {
+      const date = creationDates[cat];
+      const button = document.getElementById(cat + '-date');
+      button.textContent = date ? `▦ ${formatTaskDate(date)}` : '▦ Date';
+      button.setAttribute('aria-label', date ? `Date choisie : ${formatTaskDate(date)}. Modifier` : 'Choisir une date (optionnelle)');
+    }
+
+    function changePickerMonth(offset) {
+      const next = new Date(pickerMonth.getFullYear(), pickerMonth.getMonth() + offset, 1);
+      if (next.getFullYear() < 100 || next.getFullYear() > 9999) return;
+      pickerMonth = next;
+      renderDatePicker();
+    }
+
+    function renderDatePicker() {
+      const grid = document.getElementById('picker-grid');
+      grid.replaceChildren();
+      document.getElementById('picker-month').textContent =
+        pickerMonth.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+      document.getElementById('picker-prev').disabled = pickerMonth.getFullYear() === 100 && pickerMonth.getMonth() === 0;
+      document.getElementById('picker-next').disabled = pickerMonth.getFullYear() === 9999 && pickerMonth.getMonth() === 11;
+      ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(label => {
+        const weekday = document.createElement('span');
+        weekday.className = 'picker-weekday';
+        weekday.textContent = label;
+        grid.appendChild(weekday);
+      });
+      const selected = calendarEdit.item?.date || creationDates[calendarEdit.cat];
+      const start = new Date(pickerMonth);
+      start.setDate(1 - (start.getDay() + 6) % 7);
+      for (let i = 0; i < 42; i++) {
+        const date = new Date(start);
+        date.setDate(start.getDate() + i);
+        const day = document.createElement('button');
+        day.type = 'button';
+        day.className = 'picker-day';
+        day.dataset.date = dateInputValue(date);
+        day.textContent = date.getDate();
+        day.setAttribute('aria-label', date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+        day.setAttribute('aria-pressed', String(Boolean(selected && dateKey(date) === dateKey(selected))));
+        day.disabled = date.getFullYear() < 100 || date.getFullYear() > 9999;
+        if (date.getMonth() !== pickerMonth.getMonth()) day.classList.add('outside');
+        if (dateKey(date) === dateKey(new Date())) day.classList.add('today');
+        if (selected && dateKey(date) === dateKey(selected)) day.classList.add('selected');
+        day.onclick = () => selectPickerDate(date);
+        day.onkeydown = e => {
+          const offset = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
+          if (!offset) return;
+          e.preventDefault();
+          const next = new Date(date);
+          next.setDate(date.getDate() + offset);
+          if (next.getFullYear() < 100 || next.getFullYear() > 9999) return;
+          if (!grid.querySelector(`[data-date="${dateInputValue(next)}"]`)) {
+            pickerMonth = new Date(next.getFullYear(), next.getMonth(), 1);
+            renderDatePicker();
+          }
+          grid.querySelector(`[data-date="${dateInputValue(next)}"]`).focus();
+        };
+        grid.appendChild(day);
+      }
     }
 
     function getCalendarEvents() {
@@ -1285,7 +1356,7 @@
           event.type = 'button';
           event.className = `calendar-event ${cat}`;
           event.textContent = task.text;
-          event.title = `${cat === 'lycee' ? 'Lycée' : cat === 'perso' ? 'Perso' : 'Actuelle'} — ${task.text}\n${task.desc}`;
+          event.title = `${cat === 'lycee' ? 'Lycée' : cat === 'perso' ? 'Perso' : 'Actuelle'} — ${task.text}`;
           event.setAttribute('aria-label', `${task.text}, ${formatTaskDate(date)} : changer la date`);
           event.draggable = true;
           event.onclick = () => openCalendarDate(item);
@@ -1377,18 +1448,6 @@
         item.appendChild(top);
         item.appendChild(title);
 
-        if (task.desc) {
-          const desc = document.createElement('div');
-          desc.className = 'goal-desc';
-          desc.textContent = task.desc;
-          item.appendChild(desc);
-        }
-
-        const tag = document.createElement('span');
-        tag.className = 'tag tag-' + (task.tag || 'normal');
-        tag.textContent = task.tag === 'urgent' ? 'Urgent' : task.tag === 'important' ? 'Important' : 'Normal';
-        item.appendChild(tag);
-
         goalList.appendChild(item);
       });
 
@@ -1459,12 +1518,6 @@
         handle.textContent = '⠿';
         handle.style.cssText = 'color:rgba(255,255,255,0.2);font-size:0.9rem;cursor:grab;flex-shrink:0;letter-spacing:-1px;';
 
-        // Tag
-        const tag = document.createElement('span');
-        const tagVal = task.tag || 'normal';
-        tag.className = 'tag tag-' + tagVal;
-        tag.textContent = tagVal === 'urgent' ? 'Urgent' : (tagVal === 'important' ? 'Important' : 'Normal');
-
         const pin = document.createElement('button');
         pin.className = 'goal-pin' + (task.goal ? ' active' : '');
         pin.type = 'button';
@@ -1479,24 +1532,28 @@
         const main = document.createElement('div');
         main.className = 'task-main';
 
-        const metaRow = document.createElement('div');
-        metaRow.className = 'task-meta';
-        metaRow.appendChild(tag);
-
         const span = document.createElement('span');
         span.className = 'text'; span.textContent = task.text;
 
-        // Description
-        let desc = null;
-        if (task.desc && task.desc.trim()) {
-          desc = document.createElement('span');
-          desc.className = 'desc';
-          desc.textContent = task.desc;
-        }
-
-        main.appendChild(metaRow);
         main.appendChild(span);
-        if (desc) main.appendChild(desc);
+        const dates = extractDates(`${task.text} ${task.desc}`);
+        dates.forEach(date => {
+          const dateButton = document.createElement('button');
+          dateButton.className = 'task-date-button';
+          dateButton.type = 'button';
+          dateButton.textContent = `▦ ${formatTaskDate(date)}`;
+          dateButton.setAttribute('aria-label', `Changer la date de ${task.text}, ${formatTaskDate(date)}`);
+          dateButton.onclick = () => openCalendarDate({ cat, task, date });
+          main.appendChild(dateButton);
+        });
+        if (!dates.length) {
+          const dateButton = document.createElement('button');
+          dateButton.className = 'task-date-button';
+          dateButton.type = 'button';
+          dateButton.textContent = '▦ Ajouter une date';
+          dateButton.onclick = () => openCalendarDate({ cat, task, date: new Date() });
+          main.appendChild(dateButton);
+        }
 
         const del = document.createElement('button');
         del.className = 'del'; del.textContent = '✕'; del.title = 'Supprimer';
@@ -1581,25 +1638,16 @@
 
     function addTask(cat) {
       const input = document.getElementById(cat + '-input');
-      const tagSel = document.getElementById(cat + '-tag');
-      const descInput = document.getElementById(cat + '-desc');
-      const dateInput = document.getElementById(cat + '-date');
       const text  = input.value.trim();
-      const tag   = tagSel.value;
-      let desc = descInput.value.trim();
       if (!text) { input.focus(); return; }
-      if (!dateInput.reportValidity()) return;
-      if (dateInput.value) {
-        const [year, month, day] = dateInput.value.split('-').map(Number);
-        desc = appendTaskDate(desc, createValidDate(day, month - 1, year));
-      }
+      // Keep the existing storage format so legacy dates and local/cloud sync survive.
+      const desc = creationDates[cat] ? appendTaskDate('', creationDates[cat]) : '';
       const tasks = load(cat);
-      tasks.unshift({ text, tag, desc, done: false, goal: false });
+      tasks.unshift({ text, tag: 'normal', desc, done: false, goal: false });
       save(cat, tasks);
       input.value = '';
-      descInput.value = '';
-      dateInput.value = '';
-      tagSel.value = 'normal';
+      creationDates[cat] = null;
+      updateCreationDate(cat);
       render(cat); input.focus();
     }
 
@@ -1613,13 +1661,89 @@
       save(cat, tasks); render(cat);
     }
 
+    const THEME_PRESETS = {
+      nuit: [65, 60, 115],
+      ocean: [20, 125, 205],
+      foret: [25, 150, 80],
+      prune: [185, 50, 150],
+    };
+    const THEME_KEY = 'tasks_background_v1';
+    let themeColors = [...THEME_PRESETS.nuit];
+
+    function applyTheme() {
+      const root = document.documentElement.style;
+      root.setProperty('--bg', `rgb(${themeColors.map(value => Math.round(7 + value * 0.12)).join(',')})`);
+      root.setProperty('--card', `rgb(${themeColors.map(value => Math.round(19 + value * 0.13)).join(',')})`);
+      root.setProperty('--nav-bg', 'var(--card)');
+      root.setProperty('--theme-glow', `rgba(${themeColors.join(',')},0.1)`);
+      ['red', 'green', 'blue'].forEach((channel, index) => {
+        document.getElementById(`theme-${channel}`).value = themeColors[index];
+        document.getElementById(`theme-${channel}-value`).value = themeColors[index];
+      });
+      document.querySelectorAll('[data-theme]').forEach(button => {
+        button.setAttribute('aria-pressed', String(THEME_PRESETS[button.dataset.theme].every((value, index) => value === themeColors[index])));
+      });
+    }
+
+    function saveTheme() {
+      applyTheme();
+      try {
+        localStorage.setItem(THEME_KEY, JSON.stringify(themeColors));
+      } catch (error) {
+        console.error('Impossible de sauvegarder les couleurs.', error);
+        setSyncStatus('Couleurs appliquées, mais non sauvegardées sur cet appareil.', 'offline');
+      }
+    }
+
+    function setThemePreset(name) {
+      themeColors = [...THEME_PRESETS[name]];
+      saveTheme();
+    }
+
+    function changeThemeBalance() {
+      themeColors = ['red', 'green', 'blue'].map(channel => Number(document.getElementById(`theme-${channel}`).value));
+      saveTheme();
+    }
+
+    function openTheme() {
+      document.getElementById('theme-dialog').showModal();
+    }
+
+    function initializeTheme() {
+      try {
+        const stored = localStorage.getItem(THEME_KEY);
+        if (stored !== null) {
+          const colors = JSON.parse(stored);
+          if (!Array.isArray(colors) || colors.length !== 3 || !colors.every(value => Number.isInteger(value) && value >= 0 && value <= 255)) {
+            throw new Error('Balance de couleurs enregistrée invalide.');
+          }
+          themeColors = colors;
+        }
+      } catch (error) {
+        console.error('Impossible de lire les couleurs enregistrées.', error);
+        setSyncStatus('Couleurs enregistrées invalides. Réinitialise le fond.', 'offline');
+      }
+      applyTheme();
+    }
+
+    document.getElementById('calendar-date-dialog').addEventListener('close', () => { calendarEdit = null; });
+    ['calendar-date-dialog', 'theme-dialog'].forEach(id => {
+      const dialog = document.getElementById(id);
+      dialog.addEventListener('click', e => {
+        const bounds = dialog.getBoundingClientRect();
+        if (e.target === dialog && (e.clientX < bounds.left || e.clientX > bounds.right || e.clientY < bounds.top || e.clientY > bounds.bottom)) dialog.close();
+      });
+    });
+
     CATEGORIES.forEach(cat => {
+      updateCreationDate(cat);
       document.getElementById(cat + '-input').addEventListener('keydown', e => {
         if (e.key === 'Enter') addTask(cat);
       });
     });
     window.addEventListener('online', () => hasUnsyncedChanges ? pushState() : pullState());
     window.addEventListener('offline', () => setSyncStatus('Hors ligne — données locales', 'offline'));
+    initializeTheme();
     initializeApp();
   </script>
 </body>

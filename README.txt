@@ -20,13 +20,25 @@ necessite pas que le PC reste allume.
 
 RETROPLANNING
 =============
-Lors de la creation d'une tache, le champ "Date (optionnelle)" permet de
-choisir un jour dans le calendrier. La date est ajoutee a la description.
+Lors de la creation d'une tache, le bouton "Date" ouvre directement un
+calendrier. Cliquez sur un jour pour le choisir : aucune saisie de texte
+ni confirmation supplementaire. "Sans date" retire la date avant creation.
 Les taches Lycee, Perso et Actuelle apparaissent dans le retroplanning.
 
 Glissez une tache du retroplanning sur un autre jour pour changer sa date.
-La date correspondante est remplacee dans la description (et dans le titre
-si elle y figurait), sans effacer le reste du texte ni les autres dates.
-Cliquez sur une tache pour choisir une nouvelle date, notamment sur telephone
+Cliquez sur une tache ou son bouton de date pour ouvrir le meme calendrier,
+notamment sur telephone
 ou pour la deplacer vers un autre mois. Les changements sont synchronises
 comme les autres modifications.
+
+Les niveaux d'urgence et les descriptions ne sont plus affiches ni proposes
+a la creation. Les anciennes donnees sont conservees en interne pour ne pas
+perdre les dates existantes et rester compatible avec la synchronisation.
+
+FOND ET COULEURS
+===============
+Le bouton "Fond & couleurs" propose quatre ambiances (Nuit, Ocean, Foret,
+Prune). Les curseurs Rouge, Vert et Bleu reglent la balance des couleurs
+en direct, avec un fond sombre pour garder le texte lisible.
+Les couleurs sont conservees sur cet appareil apres rechargement.
+"Reinitialiser" retablit l'ambiance Nuit.
