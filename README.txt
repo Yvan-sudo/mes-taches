@@ -43,8 +43,9 @@ en direct, avec un fond sombre pour garder le texte lisible.
 Les couleurs sont conservees sur cet appareil apres rechargement.
 "Reinitialiser" retablit l'ambiance Nuit.
 
-L'option "Degrade de gauche a droite" permet de choisir independamment
-la couleur gauche et la couleur droite. Les cartes restent sombres pour
+L'option "Degrade du fond : droite vers gauche" place la couleur 1 a droite
+et la couleur 2 a gauche. Choisir une couleur active directement le degrade
+sur l'arriere-plan de la page. Les cartes restent sombres pour
 garder le texte lisible. Le degrade est aussi conserve sur cet appareil.
 
 MODIFICATION ET INSTALLATION

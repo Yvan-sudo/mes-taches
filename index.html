@@ -846,14 +846,14 @@
     </label>
     <label class="theme-mode" for="theme-gradient">
       <input id="theme-gradient" type="checkbox" onchange="changeGradient()" />
-      Dégradé de gauche à droite
+      Dégradé du fond : droite → gauche
     </label>
     <div class="gradient-colors">
-      <label for="gradient-left">Couleur à gauche
-        <input id="gradient-left" type="color" value="#17163b" oninput="changeGradient()" />
+      <label for="gradient-right">Couleur 1 · droite
+        <input id="gradient-right" type="color" value="#123d35" oninput="changeGradient(true)" />
       </label>
-      <label for="gradient-right">Couleur à droite
-        <input id="gradient-right" type="color" value="#123d35" oninput="changeGradient()" />
+      <label for="gradient-left">Couleur 2 · gauche
+        <input id="gradient-left" type="color" value="#17163b" oninput="changeGradient(true)" />
       </label>
     </div>
     <div class="theme-preview" aria-label="Aperçu du fond"></div>
@@ -1780,7 +1780,7 @@
       root.setProperty('--nav-bg', 'var(--card)');
       root.setProperty('--theme-glow', `rgba(${themeColors.join(',')},0.1)`);
       root.setProperty('--background-image', gradient.enabled
-        ? `linear-gradient(to right, ${gradient.left}, ${gradient.right})`
+        ? `linear-gradient(to left, ${gradient.right}, ${gradient.left})`
         : 'radial-gradient(ellipse at 15% 0%, var(--theme-glow), transparent 65%)');
       document.getElementById('theme-gradient').checked = gradient.enabled;
       document.getElementById('gradient-left').value = gradient.left;
@@ -1810,9 +1810,9 @@
       saveTheme();
     }
 
-    function changeGradient() {
+    function changeGradient(enable = false) {
       gradient = {
-        enabled: document.getElementById('theme-gradient').checked,
+        enabled: enable || document.getElementById('theme-gradient').checked,
         left: document.getElementById('gradient-left').value,
         right: document.getElementById('gradient-right').value,
       };
